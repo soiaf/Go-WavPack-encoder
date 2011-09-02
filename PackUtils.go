@@ -445,30 +445,55 @@ func pack_start_block(wpc *WavpackContext) int {
 	write_decorr_weights(&wps, &wpmd)
 	copyRetVal, wps.blockbuff = copy_metadata(wpmd, wps.blockbuff, wps.blockend)
 
+	if copyRetVal == FALSE {
+		return FALSE
+	}
+
 	write_decorr_samples(&wps, &wpmd)
 	copyRetVal, wps.blockbuff = copy_metadata(wpmd, wps.blockbuff, wps.blockend)
 
+	if copyRetVal == FALSE {
+		return FALSE
+	}
+
 	write_entropy_vars(&wps, &wpmd)
 	copyRetVal, wps.blockbuff = copy_metadata(wpmd, wps.blockbuff, wps.blockend)
+
+	if copyRetVal == FALSE {
+		return FALSE
+	}
 
 	if ((flags & SRATE_MASK) == SRATE_MASK) &&
 		(wpc.config.Sample_rate != 44100) {
 		write_sample_rate(wpc, &wpmd)
 		copyRetVal, wps.blockbuff = copy_metadata(wpmd, wps.blockbuff, wps.blockend)
+
+		if copyRetVal == FALSE {
+			return FALSE
+		}
+
 	}
 
 	if (flags & HYBRID_FLAG) != 0 {
 		write_hybrid_profile(&wps, &wpmd)
 		copyRetVal, wps.blockbuff = copy_metadata(wpmd, wps.blockbuff, wps.blockend)
+
+		if copyRetVal == FALSE {
+			return FALSE
+		}
 	}
 
 	if ((flags & INITIAL_BLOCK) > 0) && (wps.sample_index == 0) {
 		write_config_info(wpc, &wpmd)
 		copyRetVal, wps.blockbuff = copy_metadata(wpmd, wps.blockbuff, wps.blockend)
+
+		if copyRetVal == FALSE {
+			return FALSE
+		}
 	}
 
-	chunkSize = uint((wps.blockbuff[4] & 0xff) + ((wps.blockbuff[5] & 0xff) << 8) +
-		((wps.blockbuff[6] & 0xff) << 16) + ((wps.blockbuff[7] & 0xff) << 24))
+	chunkSize = uint((int(wps.blockbuff[4]) & 0xff) + ((int(wps.blockbuff[5]) & 0xff) << 8) +
+		((int(wps.blockbuff[6]) & 0xff) << 16) + ((int(wps.blockbuff[7]) & 0xff) << 24))
 
 	bs_open_write(&wps.wvbits, int(chunkSize+12), wps.blockend)
 
@@ -509,10 +534,14 @@ func pack_start_block(wpc *WavpackContext) int {
 		if (flags & HYBRID_SHAPE) != 0 {
 			write_shaping_info(&wps, &wpmd)
 			copyRetVal, wps.block2buff = copy_metadata(wpmd, wps.block2buff, wps.block2end)
+
+			if copyRetVal == FALSE {
+				return FALSE
+			}
 		}
 
-		chunkSize = uint((wps.block2buff[4] & 0xff) + ((wps.block2buff[5] & 0xff) << 8) +
-			((wps.block2buff[6] & 0xff) << 16) + ((wps.block2buff[7] & 0xff) << 24))
+		chunkSize = uint((int(wps.block2buff[4]) & 0xff) + ((int(wps.block2buff[5]) & 0xff) << 8) +
+			((int(wps.block2buff[6]) & 0xff) << 16) + ((int(wps.block2buff[7]) & 0xff) << 24))
 
 		bs_open_write(&wps.wvcbits, (int)(chunkSize+12), wps.block2end)
 	} else {
