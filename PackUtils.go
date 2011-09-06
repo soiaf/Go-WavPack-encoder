@@ -1098,7 +1098,7 @@ func pack_samples(wpc *WavpackContext, buffer []int, sample_count uint) uint {
 }
 
 func apply_weight(weight int, sample int) int {
-	return (int(((int64(weight) * int64(sample)) + 512) >> 10))
+	return (((((sample & 0xffff) * weight) >> 9) + (((sample & ^0xffff) >> 9) * weight) + 1) >> 1)
 }
 
 func update_weight(weight int, delta int, source int, result int) int {
