@@ -3,7 +3,7 @@ package wvencode
 /*
 ** BitsUtils.go
 **
-** Copyright (c) 2011 Peter McQuillan
+** Copyright (c) 2013 Peter McQuillan
 **
 ** All Rights Reserved.
 **

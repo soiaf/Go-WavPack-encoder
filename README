@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////
 //                 Go Implementation of WavPack Encoder                   //
-//                  Copyright (c) 2011 Peter McQuillan                    //
+//                  Copyright (c) 2013 Peter McQuillan                    //
 //                          All Rights Reserved.                          //
 //      Distributed under the BSD Software License (see license.txt)      //
 ////////////////////////////////////////////////////////////////////////////
@@ -19,8 +19,11 @@ all relevant information is stored natively. However, older versions of the
 command-line program will complain about this and require unpacking in "raw"
 mode.
 
-The Makefile produces the wvencode package. The test file WvEncode.go makes
-use of this package to encode WAV files to WavPack files.
+This code was built against Go version 1.1
+
+To build the executable, run
+
+go build WvEncode.go
 
 For the highest performance the hybrid mode noise shaping default is off,
 so the noise in lossy mode will have a perfectly flat spectrum. However, it
@@ -28,7 +31,7 @@ can be turned on from the command-line for testing. Also note that unlike
 the regular command-line version of WavPack, the hybrid mode bitrate must
 be specified in bits per sample rather than kbps.
 
-Usage:   gowavpack [-options] infile.wav outfile.wv [outfile.wvc]
+Usage:   WvEncode [-options] infile.wav outfile.wv [outfile.wvc]
  (default is lossless)
 
 Options: -bn = enable hybrid compression, n = 2.0 to 16.0 bits/sample 

@@ -3,7 +3,7 @@ package main
 /*
 ** WvEncode.go
 **
-** Copyright (c) 2011 Peter McQuillan
+** Copyright (c) 2013 Peter McQuillan
 **
 ** All Rights Reserved.
 **
@@ -21,7 +21,7 @@ import (
 )
 
 const usage0 = "\n"
-const usage1 string = " Usage:   gowavpack [-options] infile.wav outfile.wv [outfile.wvc]\n"
+const usage1 string = " Usage:   WvEncode [-options] infile.wav outfile.wv [outfile.wvc]\n"
 const usage2 string = " (default is lossless)\n"
 const usage3 string = "\n"
 const usage4 string = "  Options: \n       -bn = enable hybrid compression, n = 2.0 to 16.0 bits/sample\n"
@@ -69,9 +69,9 @@ func main() {
 	var VERSION_STR string = "4.40"
 	var DATE_STR string = "2007-01-16"
 
-	var sign_on1 string = "go WavPack Encoder (c) 2011 Peter McQuillan\n"
+	var sign_on1 string = "Go WavPack Encoder (c) 2013 Peter McQuillan\n"
 	var sign_on2 string = "based on TINYPACK - Tiny Audio Compressor  Version " + VERSION_STR +
-		" " + DATE_STR + " Copyright (c) 1998 - 2011 Conifer Software.  All Rights Reserved.\n"
+		" " + DATE_STR + " Copyright (c) 1998 - 2013 Conifer Software.  All Rights Reserved.\n"
 
 	//////////////////////////////////////////////////////////////////////////////
 	// The "main" function for the command-line WavPack compressor.             //
@@ -148,7 +148,7 @@ func main() {
 
 				if len(os.Args[arg_idx]) > 2 { // handle the case where the string is passed in form -b0 (number beside b)
 					var substring string = os.Args[arg_idx][2:len(os.Args[arg_idx])]
-					pd, err := strconv.Atof64(substring)
+					pd, err := strconv.ParseFloat(substring,64)
 					if err != nil {
 						// Invalid string
 						config.Bitrate = 0
@@ -162,7 +162,7 @@ func main() {
 						break
 					}
 
-					pd, err := strconv.Atof64(os.Args[arg_idx])
+					pd, err := strconv.ParseFloat(os.Args[arg_idx],64)
 					if err != nil {
 						// Invalid string
 						config.Bitrate = 0
@@ -215,7 +215,7 @@ func main() {
 
 				if len(os.Args[arg_idx]) > 2 { // handle the case where the string is passed in form -s0 (number beside s)
 					var substring string = os.Args[arg_idx][2:len(os.Args[arg_idx])]
-					pd, err := strconv.Atof64(substring)
+					pd, err := strconv.ParseFloat(substring,64)
 					if err != nil {
 						// Invalid string
 						config.Shaping_weight = 0 // noise shaping off
@@ -229,7 +229,7 @@ func main() {
 						break
 					}
 
-					pd, err := strconv.Atof64(os.Args[arg_idx])
+					pd, err := strconv.ParseFloat(os.Args[arg_idx],64)
 					if err != nil {
 						// Invalid string
 						config.Shaping_weight = 0
@@ -347,7 +347,7 @@ func pack_file(infilename string, outfilename string, out2filename string, confi
 	wv_file, err := os.OpenFile(outfilename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
 
 	if err != nil {
-		fmt.Printf("Error creating output file %s - error code is %s\n", outfilename, err.String())
+		fmt.Printf("Error creating output file %s - error code is %s\n", outfilename, err)
 		result = wvencode.HARD_ERROR
 		return (result)
 	}
